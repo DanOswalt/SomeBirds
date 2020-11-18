@@ -1,0 +1,39 @@
+.view {
+  background: cornflowerblue;
+  height: 100vh;
+  position: relative;
+}
+
+.sprite {
+  width: 70px;
+  height: 70px;
+  position: absolute;
+}
+
+.debug {
+  position: absolute;
+  top: 5;
+  left: 5;
+}
+
+.flipYAxis { 
+  transform: scale(-1, 1);
+}
+
+.flipXAxis {
+  transform: scale(1, -1);
+}
+
+.flit-40{
+  transform-origin: 50% 50%;
+  transform: rotate(-40deg);
+}
+
+.peck {
+  transform-origin: 50% 50%;
+  transform: rotate(90deg);
+}
+
+.hide {
+  display: none;
+}
