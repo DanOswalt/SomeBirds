@@ -1,6 +1,8 @@
+body {
+  background: cornflowerblue; 
+}
+
 .view {
-  background: cornflowerblue;
-  height: 100vh;
   position: relative;
 }
 
@@ -8,12 +10,18 @@
   width: 70px;
   height: 70px;
   position: absolute;
+  cursor: pointer
 }
 
 .debug {
   position: absolute;
   top: 5;
   left: 5;
+}
+
+.stats {
+  font-size: 20px;
+  position: fixed;
 }
 
 .flipYAxis { 

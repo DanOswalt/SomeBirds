@@ -3,59 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Have some birds</title>
   <link rel="stylesheet" href="styles.css">
-  <title>Document</title>
 </head>
 <body>
   <div class="view">
     <pre class="debug"></pre>
-    <div id="sprite-0" class="sprite">
-  <svg class="svgBird" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <g class="bird">
-      <g class="body">
-        <circle class="bodyShape" cx="50" cy="50" r="30" fill="coral"/>
-        <polygon class="wingUp" points="25 50 65 50 35 20" fill="tomato"></polygon>
-        <polygon class="wingDown" points="25 50 65 50 35 80" fill="tomato"></polygon>
-        <line class="worm" x1="95" x2="95" y1="16" y2="34" stroke="#333" stroke-width="2"/>
-      </g>
-      <g class="head">
-        <circle class="skull" cx="70" cy="30" r="16" fill="tomato"/>
-        <circle class="eye" cx="70" cy="30" r="6" fill="#333"/>
-        <line class="blink" x1="78" x2="62" y1="30" y2="30" stroke="#333" stroke-width="2"/>
-        <polygon class="beak" points="80 20 95 30 80 40" fill="gold" />
-        <path d="M 87 351 C 192 303 38 194 142 183" />
-      </g>
-      <g class="feet">
-        <line x1="45" x2="43" y1="80" y2="100" stroke="orange" stroke-width="3"/>
-        <line x1="55" x2="57" y1="80" y2="100" stroke="orange" stroke-width="3"/>
-      <g>
-    </g>
-    </svg>
-  </div>
-  <div id="sprite-1" class="sprite">
-  <svg class="svgBird" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <g class="bird">
-      <g class="body">
-        <circle class="bodyShape" cx="50" cy="50" r="30" fill="coral"/>
-        <polygon class="wingUp" points="25 50 65 50 35 20" fill="tomato"></polygon>
-        <polygon class="wingDown" points="25 50 65 50 35 80" fill="tomato"></polygon>
-        <line class="worm" x1="95" x2="95" y1="16" y2="34" stroke="#333" stroke-width="2"/>
-      </g>
-      <g class="head">
-        <circle class="skull" cx="70" cy="30" r="16" fill="tomato"/>
-        <circle class="eye" cx="70" cy="30" r="6" fill="#333"/>
-        <line class="blink" x1="78" x2="62" y1="30" y2="30" stroke="#333" stroke-width="2"/>
-        <polygon class="beak" points="80 20 95 30 80 40" fill="gold" />
-        <path d="M 87 351 C 192 303 38 194 142 183" />
-      </g>
-      <g class="feet">
-        <line x1="45" x2="43" y1="80" y2="100" stroke="orange" stroke-width="3"/>
-        <line x1="55" x2="57" y1="80" y2="100" stroke="orange" stroke-width="3"/>
-      <g>
-    </g>
-    </svg>
-  </div>
-  </div>
-  <script src="scripts.js"></script>  
+    <pre class="stats">Tap or hover over bird to get sweet stats.</pre>
+  </div> 
 </body>
+
+<script src="chance.js"></script>
+<script src="scripts.js"></script>
 </html>
