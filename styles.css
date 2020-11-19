@@ -21,7 +21,7 @@ body {
 
 .stats {
   font-size: 20px;
-  position: fixed;
+  text-align: center;
 }
 
 .flipYAxis { 
@@ -44,4 +44,20 @@ body {
 
 .hide {
   display: none;
+}
+
+.crown {
+  animation-name: glow;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    fill: orange;
+  }
+
+  50% {
+    fill: yellow;
+  }
 }

@@ -2,14 +2,22 @@
 Todos:
 - Squiggly worm
 - Size of elements?
-- Crown for most worms eaten?
-- BUG birds in upper left corner
 - bounce off boundaries?
 - generate in window bounds
+- bird sounds (mutable)
 */
 
 const randBetween = (min, max) => { 
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const getColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 
 const STATE = {
@@ -92,16 +100,14 @@ class Scheduler {
 class AnimationController {
   scheduler = new Scheduler();
   sprites = [];
-  numBirds = 20;
+  numBirds = 100;
+  wormChamp = 0;
   $stats = document.getElementsByClassName('stats')[0];
   
   init() {
     this.getABunchOfBirds(this.numBirds);
     this.registerListeners();
     this.scheduler.start(this.animateNextTick.bind(this));
-    this.sprites.forEach(sprite => {
-      sprite.init();
-    });
   }
   
   getABunchOfBirds(n) {
@@ -128,8 +134,28 @@ class AnimationController {
   updateStatsDisplay(sprite) {
     this.$stats.innerHTML = `${sprite.name}. Worms eaten: ${sprite.wormsEaten}.`
   }
-  
+
+  findWormChamp() {
+    let currentBest = null;
+    let currentBestAmount = 0;
+
+    this.sprites.forEach(sprite => {
+      if (sprite.wormsEaten > currentBestAmount) {
+        currentBest = sprite;
+        currentBestAmount = sprite.wormsEaten;
+      } else {
+        sprite.isWormChamp = false;
+      }
+    })
+
+    if (currentBest) {
+      currentBest.isWormChamp = true;
+    }
+  }
+
   animateNextTick() {
+    this.findWormChamp();
+
     this.sprites.forEach(sprite => {
       sprite.updateForTick();
       sprite.draw();  
@@ -157,6 +183,7 @@ class Sprite {
   peck = false;
   gotWorm = false;
   wormsEaten = 0;
+  isWormChamp = false;
   horizontalChange = 0; // move this number of pixels x axis
   verticalChange = 0; // move this number of pixels y axis
   x = 0; // current x coordinate
@@ -186,6 +213,7 @@ class Sprite {
     this.$wingUp = this.$body.getElementsByClassName('wingUp')[0];
     this.$wingDown = this.$body.getElementsByClassName('wingDown')[0];
     this.$head = this.$bird.getElementsByClassName('head')[0];
+    this.$crown = this.$head.getElementsByClassName('crown')[0];
     this.$eye = this.$bird.getElementsByClassName('eye')[0];
     this.$blink = this.$bird.getElementsByClassName('blink')[0];
     this.$worm = this.$bird.getElementsByClassName('worm')[0];
@@ -249,6 +277,14 @@ class Sprite {
     } else {
       this.$worm.classList.add("hide");
     }
+
+    // is worm champ?
+    if (this.isWormChamp) {
+      this.$crown.classList.remove("hide");
+    } else {
+      this.$crown.classList.add("hide");
+    }
+
   }
   
   updateForTick() {
@@ -267,24 +303,24 @@ class Sprite {
       this.wingUp = false;
       
       // random blink
-      this.blink = this.randBetween(1, 20) === 20;
+      this.blink = randBetween(1, 20) === 20;
  
       // randomly look up and around
-      if (!this.flit && this.randBetween(1, 40) === 40) {
+      if (!this.flit && randBetween(1, 40) === 40) {
         this.flit = true;
-      } else if (this.flit && this.randBetween(1, 10) === 10) {
+      } else if (this.flit && randBetween(1, 10) === 10) {
         this.flit = false;
       }
       
       // peck
       if (!this.flit) {
-        if (!this.peck && this.randBetween(1, 40) === 40) {
+        if (!this.peck && randBetween(1, 40) === 40) {
           this.peck = true;
           this.gotWorm = false;
-        } else if (this.peck && this.randBetween(1, 10) === 10) {
+        } else if (this.peck && randBetween(1, 10) === 10) {
           const hadWorm = this.gotWorm;
           this.peck = false;
-          this.gotWorm = this.randBetween(1, 5) === 5;
+          this.gotWorm = randBetween(1, 5) === 5;
           if (!hadWorm && this.gotWorm) {
             this.wormsEaten += 1;
           }
@@ -300,40 +336,27 @@ class Sprite {
   }
   
   getNextState() {
-    this.state = this.randBetween(0,1) === 1 ? STATE.MOVE : STATE.PAUSE;
+    this.state = randBetween(0,1) === 1 ? STATE.MOVE : STATE.PAUSE;
     if (this.state === STATE.PAUSE) {
       this.horizontalChange = 0;
       this.verticalChange = 0;
-      this.duration = this.randBetween(10, 15);
+      this.duration = randBetween(10, 15);
       this.showFeet = true;
     }
     
     if (this.state === STATE.MOVE) {
-      this.horizontalChange = this.randBetween(-10, 10) ;
-      this.verticalChange = this.randBetween(-10, 10) ;
-      this.duration = this.randBetween(10, 15);
+      this.horizontalChange = randBetween(-10, 10) ;
+      this.verticalChange = randBetween(-10, 10) ;
+      this.duration = randBetween(10, 15);
       this.showFeet = false;
     }    
   }
-    
-  randBetween(min, max) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-  
-  getColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
   
   createBirdSpriteSVG(index) {
-    const { primary, secondary } = BODY_COLORS[this.randBetween(1, BODY_COLORS.length) - 1];
+    const { primary, secondary } = BODY_COLORS[randBetween(1, BODY_COLORS.length) - 1];
+    const beakColor = BEAK_COLORS[randBetween(1, BEAK_COLORS.length) - 1];
+    const eyeColor = EYE_COLORS[randBetween(1, EYE_COLORS.length) - 1];
 
-    const beakColor = BEAK_COLORS[this.randBetween(1, BEAK_COLORS.length) - 1];
-    const eyeColor = EYE_COLORS[this.randBetween(1, EYE_COLORS.length) - 1];
     const spriteContainer = document.createElement('div');
     spriteContainer.id = "sprite-" + index;
     spriteContainer.classList.add('sprite');
@@ -363,6 +386,11 @@ class Sprite {
     const wingDown = this.createSVGElement('polygon', 'wingDown', {
       points: "25 50 65 50 35 80",
       fill: secondary
+    });
+
+    const crown = this.createSVGElement('polygon', 'crown', {
+      points: "59 0 66 5 71 0 76 5 83 0 80 10 62 10",
+      fill: 'yellow'
     });
     
     const skull = this.createSVGElement('circle', 'skull', {
@@ -429,6 +457,7 @@ class Sprite {
     head.appendChild(blink);
     head.appendChild(beak);
     head.appendChild(worm);
+    head.appendChild(crown);
     
     feet.appendChild(leftFoot);
     feet.appendChild(rightFoot);
