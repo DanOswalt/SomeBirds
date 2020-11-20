@@ -99,9 +99,8 @@ class Scheduler {
 //logic for animation
 class AnimationController {
   scheduler = new Scheduler();
-  sprites = [];
-  numBirds = 12;
-  wormChamp = 0;
+  birds = [];
+  numBirds = 3;
   $stats = document.getElementsByClassName('stats')[0];
   SPRITE_SIZE = 50;
   bounds = {
@@ -109,16 +108,27 @@ class AnimationController {
     height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - this.SPRITE_SIZE
   }
 
-  
   init() {
-    this.getABunchOfBirds(this.numBirds);
+    const savedBirds = JSON.parse(localStorage.getItem('birds'));
+    console.log(savedBirds)
+    if (savedBirds) {
+      this.rehydrateSavedBirds(savedBirds);
+    } else {
+      this.getABunchOfBirds(this.numBirds);
+    }
     this.registerListeners();
     this.scheduler.start(this.animateNextTick.bind(this));
+  }
+
+  rehydrateSavedBirds(birds) {
+    birds.forEach(bird => {
+      this.birds.push(new Bird(bird))
+    })
   }
   
   getABunchOfBirds(n) {
     for (let i = 0; i < n; i++) {
-      this.sprites.push(new Sprite({
+      this.birds.push(new Bird({
         id: i,
         x: randBetween(0, this.bounds.width),
         y: randBetween(60, this.bounds.height) 
@@ -127,30 +137,30 @@ class AnimationController {
   }
   
   registerListeners() {
-    this.sprites.forEach(sprite => {
-      sprite.DOMRef.addEventListener("mouseover", (e) => {
-        this.updateStatsDisplay(sprite);
+    this.birds.forEach(bird => {
+      bird.DOMRef.addEventListener("mouseover", (e) => {
+        this.updateStatsDisplay(bird);
       });
-      sprite.DOMRef.addEventListener("click", (e) => {
-        this.updateStatsDisplay(sprite);
+      bird.DOMRef.addEventListener("click", (e) => {
+        this.updateStatsDisplay(bird);
       })
     })
   }
   
-  updateStatsDisplay(sprite) {
-    this.$stats.innerHTML = `${sprite.name}. Worms eaten: ${sprite.wormsEaten}.`
+  updateStatsDisplay(bird) {
+    this.$stats.innerHTML = `${bird.name}. Worms eaten: ${bird.wormsEaten}.`
   }
 
   findWormChamp() {
     let currentBest = null;
     let currentBestAmount = 0;
 
-    this.sprites.forEach(sprite => {
-      if (sprite.wormsEaten > currentBestAmount) {
-        currentBest = sprite;
-        currentBestAmount = sprite.wormsEaten;
+    this.birds.forEach(bird => {
+      if (bird.wormsEaten > currentBestAmount) {
+        currentBest = bird;
+        currentBestAmount = bird.wormsEaten;
       } else {
-        sprite.isWormChamp = false;
+        bird.isWormChamp = false;
       }
     })
 
@@ -162,11 +172,12 @@ class AnimationController {
   animateNextTick() {
     this.findWormChamp();
 
-    this.sprites.forEach(sprite => {
-      sprite.updateForTick(this.bounds.height, this.bounds.width);
-      sprite.draw();  
+    this.birds.forEach(bird => {
+      bird.updateForTick(this.bounds.height, this.bounds.width);
+      bird.draw();  
     })
-    
+
+    localStorage.setItem('birds', JSON.stringify(this.birds));
     // this.updateDebugger();
   }
   
@@ -184,19 +195,23 @@ class AnimationController {
   }
 }
 
-class Sprite {
-  id = null;
-  name = chance.first();
-  state = STATE.PAUSE;
-  direction = DIRECTION.LEFT;
-  showFeet = true;
-  wingUp = false;
-  flit = false;
-  blink = false;
-  peck = false;
-  gotWorm = false;
-  wormsEaten = 0;
-  isWormChamp = false;
+class Bird {
+  id;
+  name;
+  state;
+  direction;
+  showFeet;
+  wingUp;
+  flit;
+  blink;
+  peck;
+  gotWorm;
+  wormsEaten;
+  isWormChamp;
+  primary;
+  secondary;
+  beakColor;
+  eyeColor;
   horizontalChange = 0; // move this number of pixels x axis
   verticalChange = 0; // move this number of pixels y axis
   x = 0; // current x coordinate
@@ -206,9 +221,25 @@ class Sprite {
   DOMRef = null;
   
   constructor(opts) {
+    const { primary, secondary } = BODY_COLORS[randBetween(1, BODY_COLORS.length) - 1];
     this.x = opts.x;
     this.y = opts.y;
     this.id = opts.id;
+    this.name = opts.name || chance.first();
+    this.state = opts.state || STATE.PAUSE;
+    this.direction = opts.direction || DIRECTION.LEFT;
+    this.showFeet = !!opts.showFeet;
+    this.wingUp = !!opts.wingUp;
+    this.flit = !!opts.flit;
+    this.blink = !!opts.blink;
+    this.peck = !!opts.peck;
+    this.gotWorm = !!opts.gotWorm;
+    this.wormsEaten = opts.wormsEaten || 0;
+    this.isWormChamp = !!opts.isWormChamp;
+    this.primary = opts.primary || primary;
+    this.secondary = opts.secondary || secondary;
+    this.beakColor = opts.beakColor || BEAK_COLORS[randBetween(1, BEAK_COLORS.length) - 1];
+    this.eyeColor = opts.eyeColor || EYE_COLORS[randBetween(1, EYE_COLORS.length) - 1];
     this.init();
   }
   
@@ -220,7 +251,7 @@ class Sprite {
   }
   
   getElementRefs() {
-    this.DOMRef = document.getElementById('sprite-' + this.id);
+    this.DOMRef = document.getElementById('bird-sprite-' + this.id);
     this.$bird = this.DOMRef.getElementsByClassName('bird')[0];
     this.$body = this.$bird.getElementsByClassName('body')[0];
     this.$wingUp = this.$body.getElementsByClassName('wingUp')[0];
@@ -375,13 +406,9 @@ class Sprite {
   }
   
   createBirdSpriteSVG(index) {
-    const { primary, secondary } = BODY_COLORS[randBetween(1, BODY_COLORS.length) - 1];
-    const beakColor = BEAK_COLORS[randBetween(1, BEAK_COLORS.length) - 1];
-    const eyeColor = EYE_COLORS[randBetween(1, EYE_COLORS.length) - 1];
-
     const spriteContainer = document.createElement('div');
-    spriteContainer.id = "sprite-" + index;
-    spriteContainer.classList.add('sprite');
+    spriteContainer.id = "bird-sprite-" + index;
+    spriteContainer.classList.add('bird-sprite');
     
     const spriteSVG = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
     spriteSVG.setAttribute("xmlns", "http://www.w3.org/2000/svg");
@@ -397,17 +424,17 @@ class Sprite {
       cx: '50',
       cy: '50',
       r: '30',
-      fill: primary
+      fill: this.primary
     });
     
     const wingUp = this.createSVGElement('polygon', 'wingUp', {
       points: "25 50 65 50 35 20",
-      fill: secondary
+      fill: this.secondary
     });
     
     const wingDown = this.createSVGElement('polygon', 'wingDown', {
       points: "25 50 65 50 35 80",
-      fill: secondary
+      fill: this.secondary
     });
 
     const crown = this.createSVGElement('polygon', 'crown', {
@@ -419,14 +446,14 @@ class Sprite {
       cx: 70,
       cy: 30,
       r: 16,
-      fill: primary
+      fill: this.primary
     });
     
     const eye = this.createSVGElement('circle', 'eye', {
       cx: 70,
       cy: 30,
       r: 6,
-      fill: eyeColor
+      fill: this.eyeColor
     });
     
     const blink = this.createSVGElement('line', 'blink', {
@@ -440,7 +467,7 @@ class Sprite {
     
     const beak = this.createSVGElement('polygon', 'beak', {
       points: "85 22 95 30 85 38",
-      fill: beakColor
+      fill: this.beakColor
     })
     
     const worm = this.createSVGElement('line', 'worm', {
