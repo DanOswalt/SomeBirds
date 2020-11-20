@@ -100,9 +100,15 @@ class Scheduler {
 class AnimationController {
   scheduler = new Scheduler();
   sprites = [];
-  numBirds = 100;
+  numBirds = 12;
   wormChamp = 0;
   $stats = document.getElementsByClassName('stats')[0];
+  SPRITE_SIZE = 50;
+  bounds = {
+    width: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) - this.SPRITE_SIZE,
+    height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - this.SPRITE_SIZE
+  }
+
   
   init() {
     this.getABunchOfBirds(this.numBirds);
@@ -114,8 +120,8 @@ class AnimationController {
     for (let i = 0; i < n; i++) {
       this.sprites.push(new Sprite({
         id: i,
-        x: randBetween(1, 1000),
-        y: randBetween(1, 1000)
+        x: randBetween(0, this.bounds.width),
+        y: randBetween(60, this.bounds.height) 
       }))
     }
   }
@@ -157,7 +163,7 @@ class AnimationController {
     this.findWormChamp();
 
     this.sprites.forEach(sprite => {
-      sprite.updateForTick();
+      sprite.updateForTick(this.bounds.height, this.bounds.width);
       sprite.draw();  
     })
     
@@ -166,7 +172,14 @@ class AnimationController {
   
   updateDebugger() {
     const $debug = document.getElementsByClassName('debug')[0];
-    const json = JSON.stringify(this.sprites[0], undefined, 2)
+    const json = JSON.stringify({ 
+      clientWidth: document.documentElement.clientWidth,
+      clientHeight: document.documentElement.clientHeight,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      viewportWidth: this.viewport.width,
+      viewportHeight: this.viewport.height
+    }, undefined, 2)
     $debug.innerHTML = json;
   }
 }
@@ -287,9 +300,18 @@ class Sprite {
 
   }
   
-  updateForTick() {
-    this.x += this.horizontalChange;
-    this.y += this.verticalChange;
+  updateForTick(boundsHeight, boundsWidth) {
+    if (this.x + this.horizontalChange > boundsWidth || this.x + this.horizontalChange < 0) {
+      this.x -= this.horizontalChange;
+    } else {
+      this.x += this.horizontalChange;
+    }
+
+    if (this.y + this.verticalChange > boundsHeight || this.y + this.verticalChange < 60) {
+      this.y -= this.verticalChange;
+    } else {
+      this.y += this.verticalChange;
+    }
     
     if (this.state === STATE.MOVE) {
       this.flit = false;
@@ -340,14 +362,14 @@ class Sprite {
     if (this.state === STATE.PAUSE) {
       this.horizontalChange = 0;
       this.verticalChange = 0;
-      this.duration = randBetween(10, 15);
+      this.duration = randBetween(10, 20);
       this.showFeet = true;
     }
     
     if (this.state === STATE.MOVE) {
       this.horizontalChange = randBetween(-10, 10) ;
       this.verticalChange = randBetween(-10, 10) ;
-      this.duration = randBetween(10, 15);
+      this.duration = randBetween(10, 20);
       this.showFeet = false;
     }    
   }
@@ -417,7 +439,7 @@ class Sprite {
     });
     
     const beak = this.createSVGElement('polygon', 'beak', {
-      points: "80 20 95 30 80 40",
+      points: "85 22 95 30 85 38",
       fill: beakColor
     })
     

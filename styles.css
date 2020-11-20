@@ -1,9 +1,52 @@
 body {
-  background: cornflowerblue; 
+  background: cornflowerblue;
+  padding: 0;
+  margin: 0; 
 }
 
 .view {
   position: relative;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  background: tomato;
+  padding: 0;
+  margin: 0;
+  padding-top: 20px;
+  height: 40px;
+  box-shadow: 0 0 10px #000000;
+  z-index: 100;
+  width: 100%;
+}
+
+.top-bar-item {
+  display: inline-block;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  padding: 0 20px;
+}
+
+.crown-info {
+  font-size: 20px;
+  padding: 0 5px;
+}
+
+.crown-icon {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+}
+
+.crown-definition {
+  display: inline-block;
+}
+
+.stats {
+  margin: 0;
+  font-size: 20px;
 }
 
 .sprite {
@@ -14,14 +57,9 @@ body {
 }
 
 .debug {
-  position: absolute;
-  top: 5;
-  left: 5;
-}
-
-.stats {
-  font-size: 20px;
-  text-align: center;
+  position: fixed;
+  top: 105px;
+  left: 5px;
 }
 
 .flipYAxis { 
