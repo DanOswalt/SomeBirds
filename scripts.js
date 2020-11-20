@@ -152,7 +152,7 @@ class AnimationController {
       e.preventDefault();
 
       localStorage.removeItem('birds');
-      this.init();
+      window.location.reload();
     });
   }
   
