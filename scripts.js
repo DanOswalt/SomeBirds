@@ -100,9 +100,11 @@ class Scheduler {
 class AnimationController {
   scheduler = new Scheduler();
   birds = [];
-  numBirds = 3;
+  numBirds = 7;
   $stats = document.getElementsByClassName('stats')[0];
   SPRITE_SIZE = 50;
+  currentBest = null;
+  currentBestAmount = 0;
   bounds = {
     width: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) - this.SPRITE_SIZE,
     height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - this.SPRITE_SIZE
@@ -152,20 +154,19 @@ class AnimationController {
   }
 
   findWormChamp() {
-    let currentBest = null;
-    let currentBestAmount = 0;
+    // this.currentBest = null;
+    // this.currentBestAmount = 0;
 
     this.birds.forEach(bird => {
-      if (bird.wormsEaten > currentBestAmount) {
-        currentBest = bird;
-        currentBestAmount = bird.wormsEaten;
-      } else {
-        bird.isWormChamp = false;
+      bird.isWormChamp = false;
+      if (bird.wormsEaten > this.currentBestAmount) {
+        this.currentBest = bird;
+        this.currentBestAmount = bird.wormsEaten;
       }
     })
 
-    if (currentBest) {
-      currentBest.isWormChamp = true;
+    if (this.currentBest) {
+      this.currentBest.isWormChamp = true;
     }
   }
 
