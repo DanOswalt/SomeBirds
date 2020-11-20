@@ -102,6 +102,7 @@ class AnimationController {
   birds = [];
   numBirds = 7;
   $stats = document.getElementsByClassName('stats')[0];
+  $restartBtn = document.getElementsByClassName('restart-btn')[0];
   SPRITE_SIZE = 50;
   currentBest = null;
   currentBestAmount = 0;
@@ -112,7 +113,6 @@ class AnimationController {
 
   init() {
     const savedBirds = JSON.parse(localStorage.getItem('birds'));
-    console.log(savedBirds)
     if (savedBirds) {
       this.rehydrateSavedBirds(savedBirds);
     } else {
@@ -147,6 +147,13 @@ class AnimationController {
         this.updateStatsDisplay(bird);
       })
     })
+
+    this.$restartBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      localStorage.removeItem('birds');
+      this.init();
+    });
   }
   
   updateStatsDisplay(bird) {
