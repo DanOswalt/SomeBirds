@@ -1,10 +1,15 @@
 /*
 Todos:
-- Squiggly worm
-- Size of elements?
-- bounce off boundaries?
-- generate in window bounds
+- squiggly worm
+- variable sizes?
+- work on colors
 - bird sounds (mutable)
+- edit name
+- eggs
+- deaths
+- sleeping (day cycles in background, also to mark day age of birds)
+- keep track of number of age, worms, eggs (generations/offspring?)
+- only run worm update when a worm is eaten
 */
 
 const randBetween = (min, max) => { 
@@ -31,7 +36,7 @@ const DIRECTION = {
 }
 
 const BODY_COLORS = [
-  { primary: '#000', secondary: '#222' },
+  { primary: '#666', secondary: '#444' },
   { primary: 'coral', secondary: 'tomato' },
   { primary: 'DARKTURQUOISE', secondary: 'TEAL' },
 ]
@@ -161,9 +166,6 @@ class AnimationController {
   }
 
   findWormChamp() {
-    // this.currentBest = null;
-    // this.currentBestAmount = 0;
-
     this.birds.forEach(bird => {
       bird.isWormChamp = false;
       if (bird.wormsEaten > this.currentBestAmount) {
@@ -178,12 +180,21 @@ class AnimationController {
   }
 
   animateNextTick() {
-    this.findWormChamp();
+    let doWormChampCheck = false;
+    // this.findWormChamp();
 
     this.birds.forEach(bird => {
       bird.updateForTick(this.bounds.height, this.bounds.width);
-      bird.draw();  
-    })
+      bird.draw(); 
+      if (!doWormChampCheck) {
+        doWormChampCheck = bird.gotWorm;
+      }
+      // run worm update if one of the birds 'gotWorm' 
+    });
+
+    if (doWormChampCheck) {
+      this.findWormChamp();
+    }
 
     localStorage.setItem('birds', JSON.stringify(this.birds));
     // this.updateDebugger();
