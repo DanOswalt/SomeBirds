@@ -49,6 +49,21 @@ body {
   font-size: 20px;
 }
 
+.birdName {
+  display: inline-block;
+  border: none;
+  background-color: #ff7157;
+  font-size: 20px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+}
+
+.stats-msg {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
 .bird-sprite {
   width: 70px;
   height: 70px;

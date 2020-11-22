@@ -8,7 +8,18 @@
 </head>
 <body>
   <div class="top-bar">
-    <div class="stats top-bar-item">Tap or hover over bird to get sweet stats.</div>
+    <div class="stats top-bar-item">
+      <input 
+        class="birdName hide"
+        type="text" 
+        minlength="3"
+        maxlength="12"
+        size="12"
+        name="birdName"
+        value=""
+      />
+      <p class="stats-msg">Tap or hover over bird to get sweet stats.</p>
+    </div>
     <div class="restart top-bar-item">
       <button class="restart-btn" type="button">Restart</button>
     </div>
