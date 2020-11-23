@@ -85,37 +85,37 @@ class AnimationController {
   updateStatsDisplay(bird) {
     this.$birdName.classList.remove('hide');
     this.$birdName.value = bird.name;
-    this.$statsMsg.innerHTML = `Worms eaten: ${bird.wormsEaten}.`;
+    this.$statsMsg.innerHTML = `Bugs eaten: ${bird.bugsEaten}.`;
     this.activeStatsDisplayBird = bird;
   }
 
-  findWormChamp() {
+  findBugChamp() {
     this.birds.forEach((bird) => {
-      bird.isWormChamp = false;
-      if (bird.wormsEaten > this.currentBestAmount) {
+      bird.isBugChamp = false;
+      if (bird.bugsEaten > this.currentBestAmount) {
         this.currentBest = bird;
-        this.currentBestAmount = bird.wormsEaten;
+        this.currentBestAmount = bird.bugsEaten;
       }
     });
 
     if (this.currentBest) {
-      this.currentBest.isWormChamp = true;
+      this.currentBest.isBugChamp = true;
     }
   }
 
   animateNextTick() {
-    let doWormChampCheck = false;
+    let doBugChampCheck = false;
 
     this.birds.forEach((bird) => {
       bird.updateModelForTick(this.bounds.height, this.bounds.width);
       bird.draw();
-      if (!doWormChampCheck) {
-        doWormChampCheck = bird.gotWorm;
+      if (!doBugChampCheck) {
+        doBugChampCheck = bird.gotBug;
       }
     });
 
-    if (doWormChampCheck) {
-      this.findWormChamp();
+    if (doBugChampCheck) {
+      this.findBugChamp();
     }
 
     localStorage.setItem('birds', JSON.stringify(this.birds));

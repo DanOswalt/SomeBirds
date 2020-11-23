@@ -8,9 +8,9 @@ class Bird {
   flit;
   blink;
   peck;
-  gotWorm;
-  wormsEaten;
-  isWormChamp;
+  gotBug;
+  bugsEaten;
+  isBugChamp;
   primary;
   secondary;
   beakColor;
@@ -38,9 +38,9 @@ class Bird {
     this.flit = !!opts.flit;
     this.blink = !!opts.blink;
     this.peck = !!opts.peck;
-    this.gotWorm = !!opts.gotWorm;
-    this.wormsEaten = opts.wormsEaten || 0;
-    this.isWormChamp = !!opts.isWormChamp;
+    this.gotBug = !!opts.gotBug;
+    this.bugsEaten = opts.bugsEaten || 0;
+    this.isBugChamp = !!opts.isBugChamp;
     this.primary = opts.primary || primary;
     this.secondary = opts.secondary || secondary;
     this.beakColor =
@@ -69,7 +69,7 @@ class Bird {
     this.$crown = this.$head.getElementsByClassName('crown')[0];
     this.$eye = this.$bird.getElementsByClassName('eye')[0];
     this.$blink = this.$bird.getElementsByClassName('blink')[0];
-    this.$worm = this.$bird.getElementsByClassName('worm')[0];
+    this.$bug = this.$bird.getElementsByClassName('bug')[0];
     this.$feet = this.$bird.lastElementChild;
   }
 
@@ -124,15 +124,15 @@ class Bird {
       this.$head.classList.remove('peck');
     }
 
-    // got worm?
-    if (this.gotWorm) {
-      this.$worm.classList.remove('hide');
+    // got bug?
+    if (this.gotBug) {
+      this.$bug.classList.remove('hide');
     } else {
-      this.$worm.classList.add('hide');
+      this.$bug.classList.add('hide');
     }
 
-    // is worm champ?
-    if (this.isWormChamp) {
+    // is bug champ?
+    if (this.isBugChamp) {
       this.$crown.classList.remove('hide');
     } else {
       this.$crown.classList.add('hide');
@@ -161,7 +161,7 @@ class Bird {
     if (this.state === STATE.MOVE) {
       this.flit = false;
       this.peck = false;
-      this.gotWorm = false;
+      this.gotBug = false;
       this.wingUp = this.currentTicksElapsed % 3 === 0;
       this.direction =
         this.horizontalChange > 0 ? DIRECTION.RIGHT : DIRECTION.LEFT;
@@ -184,13 +184,13 @@ class Bird {
       if (!this.flit) {
         if (!this.peck && randBetween(1, 40) === 40) {
           this.peck = true;
-          this.gotWorm = false;
+          this.gotBug = false;
         } else if (this.peck && randBetween(1, 10) === 10) {
-          const hadWorm = this.gotWorm;
+          const hadBug = this.gotBug;
           this.peck = false;
-          this.gotWorm = randBetween(1, 5) === 5;
-          if (!hadWorm && this.gotWorm) {
-            this.wormsEaten += 1;
+          this.gotBug = randBetween(1, 5) === 5;
+          if (!hadBug && this.gotBug) {
+            this.bugsEaten += 1;
           }
         }
       }
@@ -237,6 +237,7 @@ class Bird {
     const body = this.createSVGElement('g', 'body');
     const head = this.createSVGElement('g', 'head');
     const feet = this.createSVGElement('g', 'feet');
+    const bug = this.createSVGElement('g', 'bug');
 
     const bodyShape = this.createSVGElement('circle', 'bodyShape', {
       cx: '50',
@@ -288,14 +289,39 @@ class Bird {
       fill: this.beakColor,
     });
 
-    const worm = this.createSVGElement('line', 'worm', {
-      x1: 95,
-      x2: 95,
-      y1: 16,
-      y2: 34,
-      stroke: '#333',
-      'stroke-width': 2,
+    const bugBody = this.createSVGElement('circle', 'bugBody', {
+      cx: 95,
+      cy: 28,
+      r: 5,
+      fill: '#333',
     });
+
+    // const bugLegs1 = this.createSVGElement('line', 'bugLegs1', {
+    //   x1: 95,
+    //   x2: 95,
+    //   y1: 24,
+    //   y2: 38,
+    //   stroke: '#333',
+    //   'stroke-width': 2,
+    // });
+
+    // const bugLegs2 = this.createSVGElement('line', 'bugLegs2', {
+    //   x1: 100,
+    //   x2: 90,
+    //   y1: 24,
+    //   y2: 38,
+    //   stroke: 'red',
+    //   'stroke-width': 2,
+    // });
+
+    // const bugLegs3 = this.createSVGElement('line', 'bugLegs3', {
+    //   x1: 95,
+    //   x2: 95,
+    //   y1: 16,
+    //   y2: 34,
+    //   stroke: '#333',
+    //   'stroke-width': 2,
+    // });
 
     const leftFoot = this.createSVGElement('line', 'leftFoot', {
       x1: 45,
@@ -319,11 +345,16 @@ class Bird {
     body.appendChild(wingUp);
     body.appendChild(wingDown);
 
+    // bug.appendChild(bugLegs1);
+    // bug.appendChild(bugLegs2);
+    // bug.appendChild(bugLegs3);
+    bug.appendChild(bugBody);
+
     head.appendChild(skull);
     head.appendChild(eye);
     head.appendChild(blink);
+    head.appendChild(bug);
     head.appendChild(beak);
-    head.appendChild(worm);
     head.appendChild(crown);
 
     feet.appendChild(leftFoot);

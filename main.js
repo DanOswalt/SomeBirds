@@ -1,6 +1,6 @@
 /*
 Todos:
-- squiggly worm
+- change to bug
 - variable sizes?
 - work on colors
 - bird sounds (mutable)
