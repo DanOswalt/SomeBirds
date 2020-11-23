@@ -7,34 +7,36 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="top-bar">
-    <div class="stats top-bar-item">
-      <input 
-        class="birdName hide"
-        type="text" 
-        minlength="3"
-        maxlength="12"
-        size="12"
-        name="birdName"
-        value=""
-      />
-      <p class="stats-msg">Tap or hover over bird to get sweet stats.</p>
-    </div>
-    <div class="restart top-bar-item">
-      <button class="restart-btn" type="button">Restart</button>
-    </div>
-    <div class="crown-info top-bar-item">
-      <div class="crown-icon">
-        <svg class="crown" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="0 0 25 20 50 0 75 20 100 0 90 50 10 50" fill="yellow"></polygon>
-        </svg>
+  <!-- <div class="night-overlay"> -->
+    <div class="top-bar">
+      <div class="stats top-bar-item">
+        <input 
+          class="birdName hide"
+          type="text" 
+          minlength="3"
+          maxlength="12"
+          size="12"
+          name="birdName"
+          value=""
+        />
+        <p class="stats-msg">Tap or hover over bird to get sweet stats.</p>
       </div>
-      <div class="crown-definition">= Most Worms Eaten</div>
+      <div class="restart top-bar-item">
+        <button class="restart-btn" type="button">Restart</button>
+      </div>
+      <div class="crown-info top-bar-item">
+        <div class="crown-icon">
+          <svg class="crown" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="0 0 25 20 50 0 75 20 100 0 90 50 10 50" fill="yellow"></polygon>
+          </svg>
+        </div>
+        <div class="crown-definition">= Most Worms Eaten</div>
+      </div>
     </div>
-  </div>
-  <div class="view">
-    <pre class="debug"></pre>
-  </div> 
+    <div class="view">
+      <pre class="debug"></pre>
+    </div> 
+  <!-- </div> -->
 </body>
 
 <script src="chance.js"></script>

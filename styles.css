@@ -1,8 +1,37 @@
 body {
-  background: cornflowerblue;
+  /* background: cornflowerblue;
+   */
+  background: url('/backgrounds/day1.jpg') no-repeat center center
+    fixed;
+  background-size: cover;
   padding: 0;
-  margin: 0; 
+  margin: 0;
 }
+
+body::before {
+  content: '';
+  background: url('/backgrounds/night1.jpg') no-repeat center center
+    fixed;
+  height: 100vh;
+  background-size: cover;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  opacity: 1;
+  animation: fadeNight 300s infinite;
+}
+
+/* .night-overlay {
+  background: url('/backgrounds/night1.jpg') no-repeat center center
+    fixed;
+  height: 100vh;
+  background-size: cover;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+} */
 
 .view {
   position: relative;
@@ -68,7 +97,7 @@ body {
   width: 70px;
   height: 70px;
   position: absolute;
-  cursor: pointer
+  cursor: pointer;
 }
 
 .debug {
@@ -77,7 +106,7 @@ body {
   left: 5px;
 }
 
-.flipYAxis { 
+.flipYAxis {
   transform: scale(-1, 1);
 }
 
@@ -85,7 +114,7 @@ body {
   transform: scale(1, -1);
 }
 
-.flit-40{
+.flit-40 {
   transform-origin: 50% 50%;
   transform: rotate(-40deg);
 }
@@ -106,11 +135,34 @@ body {
 }
 
 @keyframes glow {
-  0%, 100% {
+  0%,
+  100% {
     fill: orange;
   }
 
   50% {
     fill: yellow;
+  }
+}
+
+@keyframes fadeNight {
+  0% {
+    opacity: 0;
+  }
+
+  60% {
+    opacity: 0;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }
