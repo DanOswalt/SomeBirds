@@ -5,9 +5,11 @@ class AnimationController {
   $statsMsg = document.getElementsByClassName('stats-msg')[0];
   $birdName = document.getElementsByClassName('birdName')[0];
   $restartBtn = document.getElementsByClassName('restart-btn')[0];
+  $nightOverlay = document.getElementsByClassName('body::before')[0];
   SPRITE_SIZE = 50;
   currentBest = null;
   currentBestAmount = 0;
+  isNight = false;
   bounds = {
     width:
       Math.max(
@@ -22,12 +24,24 @@ class AnimationController {
   };
 
   init() {
-    const savedBirds = JSON.parse(localStorage.getItem('birds'));
-    if (savedBirds) {
-      this.rehydrateSavedBirds(savedBirds);
+    const data = JSON.parse(localStorage.getItem('data'));
+    // load saved last tick. animation for fade should not be applied if loading from localstorage
+    // will need last tick, isNight
+    // maybe add class of no-animate
+    // .is-night triggers transform
+    // .no-animate just goes straight to opacity 1? or, save computedStyle??
+    if (data && data.birds) {
+      this.rehydrateSavedBirds(data.birds);
     } else {
       this.getABunchOfBirds(this.numBirds);
     }
+
+    if (data && data.lastTick) {
+      this.scheduler.setTick(data.lastTick);
+    }
+
+    console.log(this.$nightOverlay);
+
     this.registerListeners();
     this.scheduler.start(this.animateNextTick.bind(this));
   }
@@ -54,7 +68,13 @@ class AnimationController {
     this.birds.forEach((bird) => {
       bird.DOMRef.addEventListener('mouseover', (e) => {
         this.updateStatsDisplay(bird);
+        bird.DOMRef.classList.add('active-halo');
       });
+
+      bird.DOMRef.addEventListener('mouseout', (e) => {
+        bird.DOMRef.classList.remove('active-halo');
+      });
+
       bird.DOMRef.addEventListener('click', (e) => {
         this.updateStatsDisplay(bird);
       });
@@ -63,7 +83,7 @@ class AnimationController {
     this.$restartBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
-      localStorage.removeItem('birds');
+      localStorage.removeItem('data');
       window.location.reload();
     });
 
@@ -87,6 +107,7 @@ class AnimationController {
     this.$birdName.value = bird.name;
     this.$statsMsg.innerHTML = `Bugs eaten: ${bird.bugsEaten}.`;
     this.activeStatsDisplayBird = bird;
+    console.log(this.$nightOverlay);
   }
 
   findBugChamp() {
@@ -118,7 +139,15 @@ class AnimationController {
       this.findBugChamp();
     }
 
-    localStorage.setItem('birds', JSON.stringify(this.birds));
+    localStorage.setItem(
+      'data',
+      JSON.stringify({
+        birds: this.birds,
+        lastTick: this.scheduler.currentTime(),
+        isNight: this.isNight,
+      }),
+    );
+
     // this.updateDebugger();
   }
 
