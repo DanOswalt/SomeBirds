@@ -2,6 +2,7 @@ class Bird {
   id;
   name;
   state;
+  age;
   direction;
   showFeet;
   wingUp;
@@ -31,6 +32,7 @@ class Bird {
     this.y = opts.y;
     this.id = opts.id;
     this.name = opts.name || chance.first();
+    this.age = opts.age || 0;
     this.state = opts.state || STATE.PAUSE;
     this.direction = opts.direction || DIRECTION.LEFT;
     this.showFeet = !!opts.showFeet;
@@ -44,11 +46,9 @@ class Bird {
     this.primary = opts.primary || primary;
     this.secondary = opts.secondary || secondary;
     this.beakColor =
-      opts.beakColor ||
-      BEAK_COLORS[randBetween(1, BEAK_COLORS.length) - 1];
+      opts.beakColor || BEAK_COLORS[randBetween(1, BEAK_COLORS.length) - 1];
     this.eyeColor =
-      opts.eyeColor ||
-      EYE_COLORS[randBetween(1, EYE_COLORS.length) - 1];
+      opts.eyeColor || EYE_COLORS[randBetween(1, EYE_COLORS.length) - 1];
     this.init();
   }
 
@@ -139,7 +139,7 @@ class Bird {
     }
   }
 
-  updateModelForTick(boundsHeight, boundsWidth) {
+  updateModelForTick(boundsHeight, boundsWidth, isNight) {
     if (
       this.x + this.horizontalChange > boundsWidth ||
       this.x + this.horizontalChange < 0
@@ -165,6 +165,9 @@ class Bird {
       this.wingUp = this.currentTicksElapsed % 3 === 0;
       this.direction =
         this.horizontalChange > 0 ? DIRECTION.RIGHT : DIRECTION.LEFT;
+    }
+
+    if (this.state === STATE.SLEEP) {
     }
 
     if (this.state === STATE.PAUSE) {
@@ -199,11 +202,41 @@ class Bird {
     this.currentTicksElapsed += 1;
     if (this.currentTicksElapsed === this.duration) {
       this.currentTicksElapsed = 0;
-      this.getNextState();
+      this.getNextState(isNight);
     }
   }
 
-  getNextState() {
+  getNextState(isNight) {
+    // TODO
+    // if it's night and they are sleeping, leave 'em alone
+    if (isNight && this.state === STATE.SLEEP) {
+      return;
+    }
+
+    // if night but bird is not asleep, roll to see if they go to sleep
+    if (isNight && this.state !== STATE.SLEEP) {
+      if (randBetween(0, 100 === 100)) {
+        this.state = STATE.SLEEP;
+        this.horizontalChange = 0;
+        this.verticalChange = 0;
+        this.duration = 0;
+        this.showFeet = false;
+        this.blink = true;
+        this.wingUp = false;
+        this.peck = false;
+        this.flit = false;
+        return;
+      }
+    }
+
+    // if day but the bird is sleeping, roll to see if they awake
+    if (!isNight && this.state === STATE.SLEEP) {
+      if (randBetween(0, 100 !== 100)) {
+        return; // unless they roll 100, leave them alone to sleep
+      }
+    }
+
+    // if day and the bird is awake, OR will wake up
     this.state = randBetween(0, 1) === 1 ? STATE.MOVE : STATE.PAUSE;
     if (this.state === STATE.PAUSE) {
       this.horizontalChange = 0;

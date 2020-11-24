@@ -1,8 +1,7 @@
 body {
   /* background: cornflowerblue;
    */
-  background: url('/backgrounds/day1.jpg') no-repeat center center
-    fixed;
+  background: url('/backgrounds/day1.jpg') no-repeat center center fixed;
   background-size: cover;
   padding: 0;
   margin: 0;
@@ -12,8 +11,7 @@ body {
 
 body::before {
   content: '';
-  background: url('/backgrounds/night1.jpg') no-repeat center center
-    fixed;
+  background: url('/backgrounds/night1.jpg') no-repeat center center fixed;
   height: 100vh;
   background-size: cover;
   position: absolute;
@@ -22,7 +20,7 @@ body::before {
   bottom: 0px;
   left: 0px;
   opacity: 1;
-  animation: fadeNight 300s infinite;
+  animation: fadeNight 300s ease-in-out infinite;
 }
 
 /* .night-overlay {
@@ -116,6 +114,8 @@ body::before {
   position: fixed;
   top: 105px;
   left: 5px;
+  color: black;
+  background: cornflowerblue;
 }
 
 .flipYAxis {

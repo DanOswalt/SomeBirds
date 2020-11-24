@@ -14,12 +14,17 @@ const getColor = () => {
 const STATE = {
   MOVE: 'move',
   PAUSE: 'pause',
+  SLEEP: 'sleep',
 };
 
 const DIRECTION = {
   LEFT: 'left',
   RIGHT: 'right',
 };
+
+const DAY_LENGTH = 300;
+const NIGHT_BEGINS = DAY_LENGTH * 0.6;
+const NIGHT_ENDS = DAY_LENGTH * 0.9;
 
 const BODY_COLORS = [
   { primary: '#666', secondary: '#444' },

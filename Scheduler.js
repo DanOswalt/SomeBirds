@@ -9,8 +9,8 @@ class Scheduler {
     this._tick += 1;
   }
 
-  setTick(tick) {
-    this._tick = tick;
+  reset() {
+    this._tick = 0;
   }
 
   currentTime() {

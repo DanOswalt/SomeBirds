@@ -10,6 +10,7 @@ class AnimationController {
   currentBest = null;
   currentBestAmount = 0;
   isNight = false;
+  dayCount = 0;
   bounds = {
     width:
       Math.max(
@@ -25,22 +26,16 @@ class AnimationController {
 
   init() {
     const data = JSON.parse(localStorage.getItem('data'));
-    // load saved last tick. animation for fade should not be applied if loading from localstorage
-    // will need last tick, isNight
-    // maybe add class of no-animate
-    // .is-night triggers transform
-    // .no-animate just goes straight to opacity 1? or, save computedStyle??
+
     if (data && data.birds) {
       this.rehydrateSavedBirds(data.birds);
     } else {
       this.getABunchOfBirds(this.numBirds);
     }
 
-    if (data && data.lastTick) {
-      this.scheduler.setTick(data.lastTick);
+    if (data && data.dayCount) {
+      this.dayCount = data.dayCount;
     }
-
-    console.log(this.$nightOverlay);
 
     this.registerListeners();
     this.scheduler.start(this.animateNextTick.bind(this));
@@ -107,7 +102,6 @@ class AnimationController {
     this.$birdName.value = bird.name;
     this.$statsMsg.innerHTML = `Bugs eaten: ${bird.bugsEaten}.`;
     this.activeStatsDisplayBird = bird;
-    console.log(this.$nightOverlay);
   }
 
   findBugChamp() {
@@ -128,7 +122,11 @@ class AnimationController {
     let doBugChampCheck = false;
 
     this.birds.forEach((bird) => {
-      bird.updateModelForTick(this.bounds.height, this.bounds.width);
+      bird.updateModelForTick(
+        this.bounds.height,
+        this.bounds.width,
+        this.isNight,
+      );
       bird.draw();
       if (!doBugChampCheck) {
         doBugChampCheck = bird.gotBug;
@@ -139,28 +137,46 @@ class AnimationController {
       this.findBugChamp();
     }
 
+    if (!this.isNight && this.scheduler.currentTime() === NIGHT_BEGINS) {
+      this.isNight = true;
+    }
+
+    if (this.isNight && this.scheduler.currentTime() === NIGHT_ENDS) {
+      this.isNight = false;
+    }
+
+    if (this.scheduler.currentTime() === DAY_LENGTH) {
+      this.dayCount += 1;
+      this.birds.forEach((bird) => (bird.age += 1));
+      this.scheduler.reset();
+    }
+
+    console.clear();
+    console.log(NIGHT_BEGINS);
+    console.log('ticks', this.scheduler.currentTime());
+    console.log('night:', this.isNight);
+    console.log('daycount:', this.dayCount);
+
     localStorage.setItem(
       'data',
       JSON.stringify({
         birds: this.birds,
-        lastTick: this.scheduler.currentTime(),
-        isNight: this.isNight,
+        dayCount: this.dayCount,
       }),
     );
 
-    // this.updateDebugger();
+    this.updateDebugger();
   }
 
   updateDebugger() {
     const $debug = document.getElementsByClassName('debug')[0];
     const json = JSON.stringify(
       {
-        clientWidth: document.documentElement.clientWidth,
-        clientHeight: document.documentElement.clientHeight,
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight,
-        viewportWidth: this.viewport.width,
-        viewportHeight: this.viewport.height,
+        bird: this.birds[0],
+        meta: {
+          night: this.isNight,
+          ticks: this.scheduler.currentTime(),
+        },
       },
       undefined,
       2,
