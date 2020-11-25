@@ -2,7 +2,6 @@
 class Scheduler {
   _tick = 0;
   _nextTimeToTick = 0;
-  TICK_RATE = 100;
   scheduledFunction = null;
 
   tick() {
@@ -27,7 +26,7 @@ class Scheduler {
     const now = Date.now();
     if (this._nextTimeToTick <= now) {
       this.tick();
-      this._nextTimeToTick = now + this.TICK_RATE;
+      this._nextTimeToTick = now + TICK_RATE;
       this.scheduledFunction();
     }
     requestAnimationFrame(() => {

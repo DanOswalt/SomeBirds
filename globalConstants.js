@@ -22,7 +22,8 @@ const DIRECTION = {
   RIGHT: 'right',
 };
 
-const DAY_LENGTH = 1000;
+const TICK_RATE = 100; // tick every ms (10 = 1 sec)
+const DAY_LENGTH = TICK_RATE * 18; // 100 sec
 const NIGHT_BEGINS = DAY_LENGTH * 0.6;
 const NIGHT_ENDS = DAY_LENGTH * 0.9;
 
