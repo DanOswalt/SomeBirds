@@ -25,6 +25,12 @@ class AnimationController {
   };
 
   init() {
+    this.load();
+    this.registerListeners();
+    this.scheduler.start(this.animateNextTick.bind(this));
+  }
+
+  load() {
     const data = JSON.parse(localStorage.getItem('data'));
 
     if (data && data.birds) {
@@ -36,9 +42,6 @@ class AnimationController {
     if (data && data.dayCount) {
       this.dayCount = data.dayCount;
     }
-
-    this.registerListeners();
-    this.scheduler.start(this.animateNextTick.bind(this));
   }
 
   rehydrateSavedBirds(birds) {
