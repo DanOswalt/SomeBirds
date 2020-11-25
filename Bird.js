@@ -231,7 +231,7 @@ class Bird {
 
     // if day but the bird is sleeping, roll to see if they awake
     if (!isNight && this.state === STATE.SLEEP) {
-      if (randBetween(0, 100 !== 100)) {
+      if (randBetween(0, 100 !== 80)) {
         return; // unless they roll 100, leave them alone to sleep
       }
     }

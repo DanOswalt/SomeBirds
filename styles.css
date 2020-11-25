@@ -20,7 +20,7 @@ body::before {
   bottom: 0px;
   left: 0px;
   opacity: 1;
-  animation: fadeNight 300s ease-in-out infinite;
+  animation: fadeNight 1000s ease-in-out infinite;
 }
 
 /* .night-overlay {

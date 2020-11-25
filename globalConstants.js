@@ -22,7 +22,7 @@ const DIRECTION = {
   RIGHT: 'right',
 };
 
-const DAY_LENGTH = 300;
+const DAY_LENGTH = 1000;
 const NIGHT_BEGINS = DAY_LENGTH * 0.6;
 const NIGHT_ENDS = DAY_LENGTH * 0.9;
 

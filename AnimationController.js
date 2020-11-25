@@ -120,7 +120,18 @@ class AnimationController {
 
   animateNextTick() {
     let doBugChampCheck = false;
+    doBugChampCheck = this.updateBirds(doBugChampCheck);
 
+    if (doBugChampCheck) {
+      this.findBugChamp();
+    }
+
+    this.updateTimes();
+    this.save();
+    this.updateDebugger();
+  }
+
+  updateBirds(doBugChampCheck) {
     this.birds.forEach((bird) => {
       bird.updateModelForTick(
         this.bounds.height,
@@ -132,11 +143,10 @@ class AnimationController {
         doBugChampCheck = bird.gotBug;
       }
     });
+    return doBugChampCheck;
+  }
 
-    if (doBugChampCheck) {
-      this.findBugChamp();
-    }
-
+  updateTimes() {
     if (!this.isNight && this.scheduler.currentTime() === NIGHT_BEGINS) {
       this.isNight = true;
     }
@@ -150,13 +160,9 @@ class AnimationController {
       this.birds.forEach((bird) => (bird.age += 1));
       this.scheduler.reset();
     }
+  }
 
-    console.clear();
-    console.log(NIGHT_BEGINS);
-    console.log('ticks', this.scheduler.currentTime());
-    console.log('night:', this.isNight);
-    console.log('daycount:', this.dayCount);
-
+  save() {
     localStorage.setItem(
       'data',
       JSON.stringify({
@@ -164,8 +170,6 @@ class AnimationController {
         dayCount: this.dayCount,
       }),
     );
-
-    this.updateDebugger();
   }
 
   updateDebugger() {
