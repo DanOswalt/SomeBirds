@@ -30,6 +30,10 @@ fade-out {
   animation-fill-mode: backwards;
 }
 
+.mobile-msg {
+  display: none;
+}
+
 .view {
   position: relative;
 }
@@ -164,24 +168,23 @@ fade-out {
   }
 }
 
-/* @keyframes fadeNight {
-  0% {
-    opacity: 0;
+@media (max-width: 700px) {
+  body {
+    background: none;
+  }
+  body::before {
+    background: none;
+  }
+  .top-bar,
+  .view {
+    display: none;
   }
 
-  60% {
-    opacity: 0;
+  .mobile-msg {
+    display: block;
+    color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
   }
-
-  70% {
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-} */
+}
