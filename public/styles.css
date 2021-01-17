@@ -1,7 +1,5 @@
 body {
-  /* background: cornflowerblue;
-   */
-  background: url('/backgrounds/day1.jpg') no-repeat center center fixed;
+  background: url('./backgrounds/day1.jpg') no-repeat center center fixed;
   background-size: cover;
   padding: 0;
   margin: 0;
@@ -11,7 +9,7 @@ body {
 
 body::before {
   content: '';
-  background: url('/backgrounds/night1.jpg') no-repeat center center fixed;
+  background: url('./backgrounds/night1.jpg') no-repeat center center fixed;
   height: 100vh;
   background-size: cover;
   position: absolute;
@@ -20,18 +18,17 @@ body::before {
   bottom: 0px;
   left: 0px;
   opacity: 1;
-  animation: fadeNight 1800s ease-in-out infinite;
+  /* animation: fadeNight 1800s ease-in-out infinite; */
 }
 
-/* .night-overlay {
-  background: url('/backgrounds/night1.jpg') no-repeat center center
-    fixed;
-  height: 100vh;
-  background-size: cover;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
-} */
+fade-in {
+  animation: fade 30s linear;
+}
+
+fade-out {
+  animation: fade 30s linear;
+  animation-fill-mode: backwards;
+}
 
 .view {
   position: relative;
@@ -157,7 +154,17 @@ body::before {
   }
 }
 
-@keyframes fadeNight {
+@keyframes fade {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* @keyframes fadeNight {
   0% {
     opacity: 0;
   }
@@ -177,4 +184,4 @@ body::before {
   100% {
     opacity: 0;
   }
-}
+} */

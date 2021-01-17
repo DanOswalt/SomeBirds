@@ -131,7 +131,7 @@ class AnimationController {
 
     this.updateTimes();
     this.save();
-    this.updateDebugger();
+    // this.updateDebugger();
   }
 
   updateBirds(doBugChampCheck) {
